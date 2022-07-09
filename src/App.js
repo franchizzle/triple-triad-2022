@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React, { useState, Component } from 'react';
 import './App.scss';
 
 import { Client } from 'boardgame.io/react';
-// import { Local } from 'boardgame.io/multiplayer';
 import TripleTriad from './TripleTriad';
 
 import Board from './components/Board';
 import PlayerHand from './components/PlayerHand';
+import Modal from './components/Modal';
+
+import tutorial from './assets/tutorial.png';
 
 class GameBoard extends Component {
   onCardClick(card) {
@@ -36,6 +38,15 @@ class GameBoard extends Component {
     this.props.reset();
   }
 
+  state = {
+    show: true
+  };
+  showModal = e => {
+    this.setState({
+      show: !this.state.show
+    });
+  };
+
   render() {
     const gameover = this.props.ctx.gameover;
     const player1Score = this.props.G.firstPlayerCaptures.length + this.props.G.firstPlayerHand.length;
@@ -43,6 +54,20 @@ class GameBoard extends Component {
 
     return (
       <div className="triple-triad">
+        <div className={this.state.show ? "modal-wrapper" : "hidden"}>
+          <Modal onClose={this.showModal} show={this.state.show}>
+            <ol>
+              <li> Two players take turns placing cards on a three-by-three grid.</li>
+              <li>When it is your turn, you must place a card on one of the open spaces on the grid.</li>
+              <li>When a card is placed, the numbers representing its four sides are compared to any adjacent cards. If a number on the card placed is greater than the number it faces on an adjacent card, you will flip that card and capture it.
+                <div className="tutorial-image">
+                  <img src={tutorial} alt="tutorial" />
+                </div>
+              </li>
+              <li>The objective is to capture and control more cards than your opponent.</li>
+            </ol> 
+          </Modal>
+        </div>
         <div className="game-ui-wrapper">
           <div className="game-ui">
             <div className="player-header player1-header">
@@ -117,7 +142,6 @@ class GameBoard extends Component {
             </div>
           : null
         }
-
       </div>
     )
   }
